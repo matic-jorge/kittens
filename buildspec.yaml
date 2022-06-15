@@ -1,0 +1,16 @@
+version: 0.2
+
+#run-as: matic
+
+env:
+  shell: bash
+
+phases:
+  pre_build:
+    on-failure: ABORT
+    commands:
+      - ./scripts/bootstrap.sh
+  build:
+    on-failure: ABORT
+    commands:
+      - ./scripts/build.sh

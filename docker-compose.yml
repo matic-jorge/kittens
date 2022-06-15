@@ -1,0 +1,38 @@
+version: '3.9'
+services:
+    kittens:
+        container_name: kittens
+        image: kittens
+        restart: on-failure
+        #user: matic
+        ports:
+            - 4567:4567
+        working_dir: /app/kittens
+        volumes:
+            - type: bind
+              source: ./
+              target: /app/kittens
+        #command: /app/aire -c air.toml
+        depends_on:
+            - postgres
+        environment:
+            IS_DOCKER: 'true'
+            DATABASE_URL: 'postgres://postgres:mypass@postgres:5432/kittens'
+            RACK_ENV: 'development'
+        networks:
+            - matic
+    postgres:
+        image: postgres:14
+        volumes:
+            - type: volume
+              target: /var/lib/postgresql/data
+        restart: always
+        #ports:
+        #    - 5432:5432
+        environment:
+            POSTGRES_PASSWORD: 'mypass'
+        networks:
+            - matic
+networks:
+    matic:
+        name: matic

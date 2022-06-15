@@ -1,0 +1,8 @@
+.git/
+docker/
+scripts/
+terraform/
+tmp/
+docker-compose.yml
+Dockerfile
+*.md
