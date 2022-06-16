@@ -29,12 +29,10 @@ getStepAndEnvironment() {
 	fi
 
 	# Check if we're in docker or not
-	if [ "${IS_DOCKER}empty" == "empty" ]; then
-		ENVIRONMENT="local"
+	if [ ! -z "${IS_DOCKER}" ]; then
+		ENVIRONMENT="docker"
 	elif [ ! -z "${CODEBUILD_INITIATOR}" ]; then
 		ENVIRONMENT="codebuild"
-	else
-		ENVIRONMENT="docker"
 	fi
 
 	echo "${STEP}_${ENVIRONMENT}.sh"

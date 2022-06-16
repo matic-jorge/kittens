@@ -27,6 +27,7 @@ if [ "${TERRAFORM_ENVIRONMENT}" == "false" ]; then
 	source ${SCRIPT_PATH}/utilities/getEnvironment.sh
 	bootstrapFile=$(getStepAndEnvironment bootstrap)
 fi
+echo "Using the file ${bootstrapFile}"
 source ${SCRIPT_PATH}/${bootstrapFile}
 
 # Call the bootstrap function
