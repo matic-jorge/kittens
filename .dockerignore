@@ -1,6 +1,6 @@
 .git/
 docker/
-scripts/
+#scripts/
 terraform/
 tmp/
 docker-compose.yml

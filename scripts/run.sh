@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 set -e
 
-# build.sh
+# run.sh
 #
-# Builds the image to use in the rest of the "pipeline"
+# Run the kittens applications
 
 # Get the script variables
 source "${BASH_SOURCE%/*}/utilities/getScriptVars.sh"
+
+PORT=${PORT:-4567}
+
+bundle exec rackup --port ${PORT} --host 0.0.0.0

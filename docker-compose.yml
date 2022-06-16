@@ -2,9 +2,9 @@ version: '3.9'
 services:
     kittens:
         container_name: kittens
-        image: kittens
+        image: jbcjorge/kittens:${currentVersion:-latest}
         restart: on-failure
-        #user: matic
+        user: matic
         ports:
             - 4567:4567
         working_dir: /app/kittens
@@ -12,7 +12,6 @@ services:
             - type: bind
               source: ./
               target: /app/kittens
-        #command: /app/aire -c air.toml
         depends_on:
             - postgres
         environment:
