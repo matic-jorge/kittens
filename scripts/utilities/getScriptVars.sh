@@ -24,3 +24,6 @@ TERRAFORM_PATH="$(
 	cd -- "${APP_PATH}/terraform" >/dev/null 2>&1
 	pwd -P
 )"
+
+# "Constants"
+DOCKER_REPO_IMAGE="jbcjorge/kittens"

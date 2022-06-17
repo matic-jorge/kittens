@@ -10,4 +10,7 @@ source "${BASH_SOURCE%/*}/utilities/getScriptVars.sh"
 
 PORT=${PORT:-4567}
 
-bundle exec rackup --port ${PORT} --host 0.0.0.0
+(
+	cd ${APP_PATH}
+	bundle exec rackup --port ${PORT} --host 0.0.0.0
+)
