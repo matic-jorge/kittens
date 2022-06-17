@@ -12,6 +12,13 @@ data "aws_iam_policy_document" "builder" {
 data "aws_iam_policy_document" "builder_inline_policy" {
   statement {
     actions = [
+      "secretsmanager:GetSecretValue"
+    ]
+    effect    = "Allow"
+    resources = ["*"]
+  }
+  statement {
+    actions = [
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents"

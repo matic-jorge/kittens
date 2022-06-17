@@ -90,6 +90,7 @@ bootstrap() {
 		terraform apply -auto-approve /tmp/kittens.test.plan
 		dbConnectionString=$(terraform output db_connection_string)
 
+		# Store the DB connection secret
 		secretARN=$(aws secretsmanager list-secrets --filters Key=name,Values=test/dbConnectionString --query "SecretList | [0].ARN" --output text)
 		if [ "${secretARN}" == "None" ]; then
 			aws secretsmanager create-secret \
@@ -99,7 +100,21 @@ bootstrap() {
 		else
 			aws secretsmanager update-secret \
 				--secret-id ${secretARN} \
-				--secret-string ${dbConnectionString} >/dev/null 2>&1
+				--secret-string "{\"dbConnectionString\":\"${dbConnectionString}\"}" >/dev/null 2>&1
 		fi
+
+		# Store the docker login secret
+		secretARN=$(aws secretsmanager list-secrets --filters Key=name,Values=common/dockerLogin --query "SecretList | [0].ARN" --output text)
+		if [ "${secretARN}" == "None" ]; then
+			aws secretsmanager create-secret \
+				--name common/dockerLogin \
+				--description "Login credentials for docker hub" \
+				--secret-string "{\"user\":\"$(cat ${APP_PATH}/dockerLogin.ini | grep 'user' | sed 's/user=//g')\",\"password\":\"$(cat ${APP_PATH}/dockerLogin.ini | grep 'token' | sed 's/token=//g')\"}" >/dev/null 2>&1
+		else
+			aws secretsmanager update-secret \
+				--secret-id ${secretARN} \
+				--secret-string "{\"user\":\"$(cat ${APP_PATH}/dockerLogin.ini | grep 'user' | sed 's/user=//g')\",\"password\":\"$(cat ${APP_PATH}/dockerLogin.ini | grep 'token' | sed 's/token=//g')\"}" >/dev/null 2>&1
+		fi
+
 	)
 }

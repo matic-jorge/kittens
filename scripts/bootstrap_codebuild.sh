@@ -11,6 +11,9 @@ source "${BASH_SOURCE%/*}/utilities/getScriptVars.sh"
 bootstrap() {
 	# Add the 'docker/' resources to be ignored by docker
 	echo "docker/" >${APP_PATH}/.dockerignore
+
+	docker login --username ${DOCKER_LOGIN_USER} --password ${DOCKER_LOGIN_PASSWORD}
+
 	# Build the docker image
 	(
 		cd ${APP_PATH}

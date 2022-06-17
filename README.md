@@ -54,3 +54,27 @@ Need ruby 2.4.9
 
 - `DATABASE_URL` - url to database e.g `postgres://{user}:{password}@{hostname}:{port}/{database-name}`
 - `RACK_ENV` - environment for the app. possible values: `production`, `development`, `test`
+
+## Additions:
+
+In order for this to work, a valid AWS and Docker Hub accounts are needed.
+
+Please configure AWS CLI as usual, the user should have admin rights.
+
+To configure Docker Hub please create a file `dockerLogin.ini` like the following:
+
+```
+user=awesomeDev
+token=6e58f19f-d86c-42c9-z196-ab817eea6337
+```
+
+Also in the terraform directory a file named `secrets.tfvars` is needed. This file is to hold the sensitive variables needed for Terraform to run.
+
+```
+# Access to AWS
+aws_access_key_id     = "AKIATJFV5EZZCPOEW7XQ"
+aws_secret_access_key = "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"
+
+# DB Configuration
+db_master_password = "CatsWatchAndJudge"
+```

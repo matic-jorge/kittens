@@ -4,6 +4,8 @@ env:
   shell: bash
   secrets-manager:
     DB_CONNECTION_STRING: test/dbConnectionString:dbConnectionString
+    DOCKER_LOGIN_USER: common/dockerLogin:user
+    DOCKER_LOGIN_PASSWORD: common/dockerLogin:password
 
 phases:
   pre_build:

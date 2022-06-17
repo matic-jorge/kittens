@@ -3,4 +3,5 @@ terraform/
 tmp/
 docker-compose.yml
 Dockerfile
+dockerLogin.ini
 *.md
