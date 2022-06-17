@@ -88,5 +88,18 @@ bootstrap() {
 			exit 0
 		fi
 		terraform apply -auto-approve /tmp/kittens.test.plan
+		dbConnectionString=$(terraform output db_connection_string)
+
+		secretARN=$(aws secretsmanager list-secrets --filters Key=name,Values=test/dbConnectionString --query "SecretList | [0].ARN" --output text)
+		if [ "${secretARN}" == "None" ]; then
+			aws secretsmanager create-secret \
+				--name test/dbConnectionString \
+				--description "Connection string for test environment." \
+				--secret-string "{\"dbConnectionString\":\"${dbConnectionString}\"}" >/dev/null 2>&1
+		else
+			aws secretsmanager update-secret \
+				--secret-id ${secretARN} \
+				--secret-string ${dbConnectionString} >/dev/null 2>&1
+		fi
 	)
 }

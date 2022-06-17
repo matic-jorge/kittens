@@ -1,9 +1,9 @@
 version: 0.2
 
-#run-as: matic
-
 env:
   shell: bash
+  secrets-manager:
+    DB_CONNECTION_STRING: test/dbConnectionString:dbConnectionString
 
 phases:
   pre_build:
