@@ -17,7 +17,10 @@ module "db" {
 module "build" {
   source = "../modules/build"
 
-  subnets_arn       = []
-  build_buckets_arn = []
+  subnets_arns       = module.aws_infra.codebuild_subnet_arns
+  build_buckets_arn  = []
+  vpc_id             = module.aws_infra.vpc_id
+  subnets_ids        = module.aws_infra.codebuild_subnet_ids
+  security_group_ids = [module.aws_infra.default_sg_id]
 
 }

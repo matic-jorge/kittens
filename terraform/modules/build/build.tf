@@ -34,6 +34,12 @@ resource "aws_codebuild_project" "kittens" {
     git_clone_depth = 1
   }
 
+  vpc_config {
+    vpc_id             = var.vpc_id
+    subnets            = var.subnets_ids
+    security_group_ids = var.security_group_ids
+  }
+
   tags = {
     Environment = "Test"
   }

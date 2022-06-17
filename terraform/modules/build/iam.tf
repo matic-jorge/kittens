@@ -50,7 +50,7 @@ data "aws_iam_policy_document" "builder_inline_policy" {
     condition {
       test     = "StringEquals"
       variable = "ec2:Subnet"
-      values   = var.subnets_arn
+      values   = var.subnets_arns
     }
     condition {
       test     = "StringEquals"
