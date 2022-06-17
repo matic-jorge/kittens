@@ -88,7 +88,7 @@ bootstrap() {
 			exit 0
 		fi
 		terraform apply -auto-approve /tmp/kittens.test.plan
-		dbConnectionString=$(terraform output db_connection_string)
+		dbConnectionString="$(terraform output -raw db_connection_string)"
 
 		# Store the DB connection secret
 		secretARN=$(aws secretsmanager list-secrets --filters Key=name,Values=test/dbConnectionString --query "SecretList | [0].ARN" --output text)
