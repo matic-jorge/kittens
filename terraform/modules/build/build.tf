@@ -29,8 +29,8 @@ resource "aws_codebuild_project" "kittens" {
   }
 
   source {
-    type            = "GITHUB"
-    location        = "https://github.com/matic-jorge/kittens"
+    type            = "CODECOMMIT"
+    location        = aws_codecommit_repository.kittens.clone_url_http
     git_clone_depth = 1
   }
 

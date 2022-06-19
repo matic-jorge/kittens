@@ -21,3 +21,13 @@ variable "db_master_password" {
   description = "Password of the master db user"
   sensitive   = true
 }
+
+variable "daily_driver" {
+  type        = string
+  description = "Username to use as the daily driver"
+}
+
+variable "daily_driver_ssh_file" {
+  type        = string
+  description = "Full path for the ssh pub key for the daily driver"
+}

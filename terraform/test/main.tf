@@ -1,8 +1,10 @@
 module "aws_infra" {
   source = "../modules/environment"
 
-  environment = local.environment
-  cidr        = local.cidr
+  environment           = local.environment
+  cidr                  = local.cidr
+  daily_driver          = var.daily_driver
+  daily_driver_ssh_file = var.daily_driver_ssh_file
 }
 
 module "db" {
