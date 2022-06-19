@@ -47,5 +47,28 @@ resource "aws_db_subnet_group" "default" {
 
 data "aws_security_group" "default" {
   vpc_id = aws_vpc.main.id
-  name = "default"
+  name   = "default"
+}
+
+resource "aws_security_group" "build" {
+  name   = "build"
+  vpc_id = aws_vpc.main.id
+}
+
+resource "aws_security_group_rule" "build_egress" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.build.id
+}
+
+resource "aws_internet_gateway" "gw" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name        = var.environment
+    environment = var.environment
+  }
 }

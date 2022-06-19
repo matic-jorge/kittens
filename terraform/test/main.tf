@@ -21,6 +21,6 @@ module "build" {
   build_buckets_arn  = []
   vpc_id             = module.aws_infra.vpc_id
   subnets_ids        = module.aws_infra.codebuild_subnet_ids
-  security_group_ids = [module.aws_infra.default_sg_id]
+  security_group_ids = [module.aws_infra.build_sg_id]
 
 }

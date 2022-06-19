@@ -1,3 +1,6 @@
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
 data "aws_iam_policy_document" "builder" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -45,7 +48,7 @@ data "aws_iam_policy_document" "builder_inline_policy" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:ec2:us-east-1:123456789012:network-interface/*"
+      "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:network-interface/*"
     ]
     condition {
       test     = "StringEquals"
@@ -70,6 +73,7 @@ data "aws_iam_policy_document" "builder_inline_policy" {
 
 resource "aws_iam_role" "builder" {
   name               = "builder"
+  path               = "/terraform/build/"
   assume_role_policy = data.aws_iam_policy_document.builder.json
 }
 
