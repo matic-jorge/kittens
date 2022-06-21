@@ -30,7 +30,7 @@ resource "aws_codebuild_project" "kittens" {
 
   source {
     type            = "CODECOMMIT"
-    location        = aws_codecommit_repository.kittens.clone_url_http
+    location        = "https://${element(aws_vpc_endpoint.codecommit.dns_entry, length(aws_vpc_endpoint.codecommit.dns_entry) - 1)["dns_name"]}/v1/repos/${aws_codecommit_repository.kittens.repository_name}"
     git_clone_depth = 1
   }
 
