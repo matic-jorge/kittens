@@ -7,3 +7,10 @@ set -e
 
 # Get the script variables
 source "${BASH_SOURCE%/*}/utilities/getScriptVars.sh"
+
+source ${SCRIPT_PATH}/utilities/getEnvironment.sh
+environment=$(getEnvironment)
+postBuildFile=$(getStepAndEnvironment postbuild)
+source ${SCRIPT_PATH}/${postBuildFile}
+
+postbuild
