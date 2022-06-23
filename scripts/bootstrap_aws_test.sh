@@ -44,6 +44,29 @@ if [ "$?" -ne "0" ]; then
 	echo "'terraform binary found'${additional_output}"
 fi
 
+handleSecrets() {
+	# Args:
+	# 	secretPath:		where to store/retrieve the secret
+	#   secretString:	what to save/update
+	#		description: 	secret description
+	secretPath=${1}
+	secretString=${2}
+	description=${3}
+	secretARN=$(aws secretsmanager list-secrets --filters Key=name,Values=${secretPath} --query "SecretList | [0].ARN" --output text)
+	if [ "${secretARN}" == "None" ]; then
+		echo "Creating the secret '${secretPath}'"
+		aws secretsmanager create-secret \
+			--name ${secretPath} \
+			--description "${description}" \
+			--secret-string "${secretString}" >/dev/null 2>&1
+	else
+		echo "Updating the secret '${secretPath}' (${secretARN})"
+		aws secretsmanager update-secret \
+			--secret-id ${secretARN} \
+			--secret-string "${secretString}" >/dev/null 2>&1
+	fi
+}
+
 bootstrap() {
 	# Checks the AWS CLI have the right access
 	aws s3api list-buckets >/dev/null 2>&1
@@ -91,30 +114,14 @@ bootstrap() {
 		dbConnectionString="$(terraform output -raw db_connection_string)"
 
 		# Store the DB connection secret
-		secretARN=$(aws secretsmanager list-secrets --filters Key=name,Values=test/dbConnectionString --query "SecretList | [0].ARN" --output text)
-		if [ "${secretARN}" == "None" ]; then
-			aws secretsmanager create-secret \
-				--name test/dbConnectionString \
-				--description "Connection string for test environment." \
-				--secret-string "{\"dbConnectionString\":\"${dbConnectionString}\"}" >/dev/null 2>&1
-		else
-			aws secretsmanager update-secret \
-				--secret-id ${secretARN} \
-				--secret-string "{\"dbConnectionString\":\"${dbConnectionString}\"}" >/dev/null 2>&1
-		fi
+		handleSecrets "test/dbConnectionString" "{\"dbConnectionString\":\"${dbConnectionString}\"}" "Cpnnection string for test environment."
+
+		# Store the Heroku secrets
+		herokuEmail=$(cat ${TERRAFORM_PATH}/secrets.tfvars | grep 'heroku_email' | cut -d= -f2 | sed -e 's/[[:space:]]//g' -e 's/"//g')
+		herokuApiKey=$(cat ${TERRAFORM_PATH}/secrets.tfvars | grep 'heroku_api_key' | cut -d= -f2 | sed -e 's/[[:space:]]//g' -e 's/"//g')
+		handleSecrets "test/heroku" "{\"email\":\"${herokuEmail}\",\"apiKey\":\"${herokuApiKey}\"}" "Heroku secrets"
 
 		# Store the docker login secret
-		secretARN=$(aws secretsmanager list-secrets --filters Key=name,Values=common/dockerLogin --query "SecretList | [0].ARN" --output text)
-		if [ "${secretARN}" == "None" ]; then
-			aws secretsmanager create-secret \
-				--name common/dockerLogin \
-				--description "Login credentials for docker hub" \
-				--secret-string "{\"user\":\"$(cat ${APP_PATH}/dockerLogin.ini | grep 'user' | sed 's/user=//g')\",\"password\":\"$(cat ${APP_PATH}/dockerLogin.ini | grep 'token' | sed 's/token=//g')\"}" >/dev/null 2>&1
-		else
-			aws secretsmanager update-secret \
-				--secret-id ${secretARN} \
-				--secret-string "{\"user\":\"$(cat ${APP_PATH}/dockerLogin.ini | grep 'user' | sed 's/user=//g')\",\"password\":\"$(cat ${APP_PATH}/dockerLogin.ini | grep 'token' | sed 's/token=//g')\"}" >/dev/null 2>&1
-		fi
-
+		handleSecrets "common/dockerLogin" "{\"user\":\"$(cat ${APP_PATH}/dockerLogin.ini | grep 'user' | sed 's/user=//g')\",\"password\":\"$(cat ${APP_PATH}/dockerLogin.ini | grep 'token' | sed 's/token=//g')\"}" "Login credentials for docker hub"
 	)
 }

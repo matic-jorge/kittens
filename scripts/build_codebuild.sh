@@ -8,7 +8,9 @@
 source "${BASH_SOURCE%/*}/utilities/getScriptVars.sh"
 
 test() {
+	echo "----> Starting to run tests!"
 	docker run --entrypoint bundle -e RACK_ENV="test" -e DATABASE_URL="${DB_CONNECTION_STRING}" kittens:${CODEBUILD_RESOLVED_SOURCE_VERSION} exec rspec
+	echo "----> The tests had ended succesfully"
 }
 
 build() {

@@ -6,6 +6,8 @@ env:
     DB_CONNECTION_STRING: test/dbConnectionString:dbConnectionString
     DOCKER_LOGIN_USER: common/dockerLogin:user
     DOCKER_LOGIN_PASSWORD: common/dockerLogin:password
+    HEROKU_EMAIL: test/heroku:email
+    HEROKU_API_KEY: test/heroku:apiKey
 
 phases:
   pre_build:
@@ -16,3 +18,7 @@ phases:
     on-failure: ABORT
     commands:
       - ./scripts/build.sh
+  post_build:
+    on-failure: ABORT
+    commands:
+      - ./scripts/postbuild.sh

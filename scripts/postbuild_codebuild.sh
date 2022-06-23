@@ -15,9 +15,10 @@ postbuild() {
 		exit 0
 	fi
 
-	# Login to docker hub
-	# TODO
+	# Login to Heroku docker repository
+	docker login --username=_ --password=${HEROKU_API_KEY} registry.heroku.com
 
-	# Push to docker hub
-	# TODO
+	# Push to Heroku registry
+	docker tag kittens:prod_${CODEBUILD_RESOLVED_SOURCE_VERSION} registry.heroku.com/jmillan-kittens-test/web
+	docker push registry.heroku.com/jmillan-kittens-test/web
 }
