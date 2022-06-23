@@ -13,8 +13,20 @@ resource "aws_vpc" "main" {
   }
 }
 
+resource "aws_subnet" "gateway" {
+  for_each          = { 0 = 0 }
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = cidrsubnet(var.cidr, 12, each.value)
+  availability_zone = data.aws_availability_zones.available.names[each.value]
+
+  tags = {
+    Name        = "${var.environment}-gateway"
+    environment = var.environment
+  }
+}
+
 resource "aws_subnet" "db" {
-  for_each          = { 0 = 0, 1 = 1 }
+  for_each          = { 0 = 1, 1 = 2 }
   vpc_id            = aws_vpc.main.id
   cidr_block        = cidrsubnet(var.cidr, 12, each.value)
   availability_zone = data.aws_availability_zones.available.names[each.value]
@@ -26,7 +38,7 @@ resource "aws_subnet" "db" {
 }
 
 resource "aws_subnet" "codebuild" {
-  for_each          = { 0 = 0, 1 = 1 }
+  for_each          = { 0 = 2, 1 = 3 }
   vpc_id            = aws_vpc.main.id
   cidr_block        = cidrsubnet(var.cidr, 12, each.value + 2)
   availability_zone = data.aws_availability_zones.available.names[each.value]
@@ -73,4 +85,48 @@ resource "aws_internet_gateway" "gw" {
     Name        = var.environment
     environment = var.environment
   }
+}
+
+resource "aws_default_route_table" "main" {
+  default_route_table_id = aws_vpc.main.default_route_table_id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.gw.id
+  }
+
+  route {
+    ipv6_cidr_block = "::/0"
+    gateway_id      = aws_internet_gateway.gw.id
+  }
+
+  tags = {
+    Name        = "gateway-${var.environment}"
+    environment = var.environment
+  }
+}
+
+resource "aws_route_table" "build" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block           = "0.0.0.0/0"
+    network_interface_id = aws_instance.gateway.primary_network_interface_id
+  }
+
+  route {
+    ipv6_cidr_block      = "::/0"
+    network_interface_id = aws_instance.gateway.primary_network_interface_id
+  }
+
+  tags = {
+    Name        = "build-${var.environment}"
+    environment = var.environment
+  }
+}
+
+resource "aws_route_table_association" "build" {
+  for_each       = aws_subnet.codebuild
+  subnet_id      = each.value.id
+  route_table_id = aws_route_table.build.id
 }

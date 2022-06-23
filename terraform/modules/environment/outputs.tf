@@ -25,3 +25,11 @@ output "default_sg_id" {
 output "build_sg_id" {
   value = aws_security_group.build.id
 }
+
+output "codebuild_role_arn" {
+  value = aws_iam_role.builder.arn
+}
+
+output "codecommit_repository_name" {
+  value = aws_codecommit_repository.kittens.repository_name
+}

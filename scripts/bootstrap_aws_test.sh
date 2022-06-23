@@ -80,7 +80,7 @@ bootstrap() {
 
 	(
 		cd terraform/test
-		terraform init
+		terraform init -upgrade
 		terraform plan -var-file="${TERRAFORM_PATH}/secrets.tfvars" -var-file="${TERRAFORM_PATH}/variables.tfvars" -out /tmp/kittens.test.plan
 		read -p 'Continue (Y/n): ' applyChanges
 		if [ "${applyChanges,,}" != "y" ]; then
