@@ -7,13 +7,14 @@
 # Get the script variables
 source "${BASH_SOURCE%/*}/utilities/getScriptVars.sh"
 
+test() {
+	docker run --entrypoint bundle -e RACK_ENV="test" -e DATABASE_URL="${DB_CONNECTION_STRING}" kittens:${CODEBUILD_RESOLVED_SOURCE_VERSION} exec rspec
+}
+
 build() {
 	# Build the docker image
 	(
 		cd ${APP_PATH}
-		docker build -t kittens:${CODEBUILD_RESOLVED_SOURCE_VERSION} .
+		docker build --target prod -t kittens:prod_${CODEBUILD_RESOLVED_SOURCE_VERSION} .
 	)
-
-	# Reset the DB for testing (if exists, is recreated, if not, is created)
-	bundle exec rake db:reset
 }

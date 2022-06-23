@@ -69,6 +69,16 @@ resource "aws_security_group" "build" {
   vpc_id = aws_vpc.main.id
 }
 
+resource "aws_security_group_rule" "build_ingress_all_vpc" {
+  type              = "ingress"
+  description       = "All traffic from VPC"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = [aws_vpc.main.cidr_block]
+  security_group_id = aws_security_group.build.id
+}
+
 resource "aws_security_group_rule" "build_egress" {
   type              = "egress"
   from_port         = 0
@@ -110,13 +120,15 @@ resource "aws_route_table" "build" {
   vpc_id = aws_vpc.main.id
 
   route {
-    cidr_block           = "0.0.0.0/0"
-    network_interface_id = aws_instance.gateway.primary_network_interface_id
+    cidr_block  = "0.0.0.0/0"
+    instance_id = aws_instance.gateway.id
+    #network_interface_id = aws_instance.gateway.primary_network_interface_id
   }
 
   route {
-    ipv6_cidr_block      = "::/0"
-    network_interface_id = aws_instance.gateway.primary_network_interface_id
+    ipv6_cidr_block = "::/0"
+    instance_id     = aws_instance.gateway.id
+    #network_interface_id = aws_instance.gateway.primary_network_interface_id
   }
 
   tags = {

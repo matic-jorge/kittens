@@ -24,6 +24,7 @@ data "aws_iam_policy_document" "builder" {
 }
 
 data "aws_iam_policy_document" "builder_inline_policy" {
+  policy_id = "builder"
   statement {
     actions = [
       "secretsmanager:GetSecretValue"
@@ -62,9 +63,9 @@ data "aws_iam_policy_document" "builder_inline_policy" {
       "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:network-interface/*"
     ]
     condition {
-      test     = "StringEquals"
+      test     = "ArnEquals"
       variable = "ec2:Subnet"
-      values   = [for subnet in aws_subnet.codebuild : subnet.id]
+      values   = [for subnet in aws_subnet.codebuild : subnet.arn]
     }
     condition {
       test     = "StringEquals"
