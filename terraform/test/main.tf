@@ -37,6 +37,9 @@ module "build" {
 module "heroku" {
   source = "../modules/heroku"
 
+  environment          = local.environment
+  db_connection_string = module.db.db_connection_string
+
   heroku_email   = var.heroku_email
   heroku_api_key = var.heroku_api_key
 }

@@ -1,5 +1,5 @@
-resource "heroku_app" "test" {
-  name   = "jmillan-kittens-test"
+resource "heroku_app" "kittens" {
+  name   = "jmillan-kittens-${var.environment}"
   region = "us"
 
   stack = "container"
