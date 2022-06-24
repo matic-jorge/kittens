@@ -37,3 +37,7 @@ output "codecommit_repository_name" {
 output "codecommit_repository_arn" {
   value = aws_codecommit_repository.kittens.arn
 }
+
+output "ssh_key_id" {
+  value = aws_iam_user_ssh_key.daily_driver.ssh_public_key_id
+}
