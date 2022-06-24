@@ -8,10 +8,11 @@ data "archive_file" "trigger_zip_file" {
 resource "aws_lambda_function" "codecommit_trigger" {
   function_name    = "codecommit_trigger"
   filename         = data.archive_file.trigger_zip_file.output_path
-  handler          = "lambda_handler"
+  handler          = "lambda.lambda_handler"
   role             = aws_iam_role.deploy_trigger.arn
   source_code_hash = data.archive_file.trigger_zip_file.output_base64sha256
   runtime          = "python3.9"
+  timeout          = 60
 
   environment {
     variables = {
