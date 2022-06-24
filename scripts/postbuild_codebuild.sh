@@ -2,8 +2,7 @@
 
 # bootstrap_codebuild.sh
 #
-# This bootstrap the application to run on codebuild, creating the
-# docker image
+# This creates the image which will be used in the test environment (Heroku)
 
 # Get the script variables
 source "${BASH_SOURCE%/*}/utilities/getScriptVars.sh"
@@ -29,4 +28,12 @@ postbuild() {
 	# Push to Heroku registry
 	docker tag kittens:prod_${CODEBUILD_RESOLVED_SOURCE_VERSION} registry.heroku.com/jmillan-kittens-test/web
 	docker push registry.heroku.com/jmillan-kittens-test/web
+
+	# Release the image to heroku
+	DOCKER_IMAGE_ID=$(docker inspect kittens:prod_${CODEBUILD_RESOLVED_SOURCE_VERSION} --format={{.Id}})
+	curl -u ${HEROKU_EMAIL}:${HEROKU_API_KEY} \
+		-H "Content-Type: application/json" \
+		-H "Accept: application/vnd.heroku+json; version=3.docker-releases" \
+		-X PATCH https://api.heroku.com/apps/jmillan-kittens-test/formation \
+		-d '{"updates":[{"type":"web","docker_image":"'${DOCKER_IMAGE_ID}'"}]}'
 }
