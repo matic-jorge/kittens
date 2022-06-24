@@ -11,9 +11,9 @@ source "${BASH_SOURCE%/*}/utilities/getScriptVars.sh"
 postbuild() {
 	echo "Starting codebuild post build"
 	# Get the current branch
-	GIT_BRANCH=$(git symbolic-ref HEAD --short 2>/dev/null)
+	GIT_BRANCH=$(git symbolic-ref HEAD --short 2>/dev/null || true)
 	if [ "$GIT_BRANCH" == "" ]; then
-		GIT_BRANCH=$(git branch -a --contains HEAD | sed -n 2p | rev | cut -d/ -f1 | rev)
+		GIT_BRANCH=$(git branch -a --contains HEAD | sed -n 2p | sed -e 's/[[:space:]]//g' | rev | cut -d/ -f1 | rev)
 	fi
 
 	# Check if the branch is main
