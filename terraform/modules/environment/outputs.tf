@@ -33,3 +33,7 @@ output "codebuild_role_arn" {
 output "codecommit_repository_name" {
   value = aws_codecommit_repository.kittens.repository_name
 }
+
+output "codecommit_repository_arn" {
+  value = aws_codecommit_repository.kittens.arn
+}

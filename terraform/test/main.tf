@@ -34,6 +34,17 @@ module "build" {
   aws_secret_access_key = var.aws_secret_access_key
 }
 
+module "trigger" {
+  source = "../modules/trigger"
+
+  codecommit_repository_name = module.aws_infra.codecommit_repository_name
+  codecommit_repository_arn  = module.aws_infra.codecommit_repository_arn
+  codebuild_project_arn      = module.build.codebuild_project_arn
+
+  aws_access_key_id     = var.aws_access_key_id
+  aws_secret_access_key = var.aws_secret_access_key
+}
+
 module "heroku" {
   source = "../modules/heroku"
 

@@ -8,4 +8,5 @@ resource "aws_db_instance" "kittens" {
   password             = var.db_master_password
   skip_final_snapshot  = true
   db_subnet_group_name = var.subnet_group_name
+  publicly_accessible  = true
 }

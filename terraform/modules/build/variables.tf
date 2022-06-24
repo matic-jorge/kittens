@@ -36,11 +36,13 @@ variable "security_group_ids" {
 }
 
 variable "codebuild_role_arn" {
-  type = string
+  type        = string
   description = "ARN of the role to use in codebuild"
 }
 
 variable "codecommit_repository_name" {
-  type = string
+  type        = string
   description = "Name of the CodeCommit repository"
 }
+
+
