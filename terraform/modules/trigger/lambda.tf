@@ -19,3 +19,11 @@ resource "aws_lambda_function" "codecommit_trigger" {
     }
   }
 }
+
+resource "aws_lambda_permission" "allow_codecommit" {
+  statement_id  = "AllowExecutionFromCodeCommit"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.codecommit_trigger.function_name
+  principal     = "codecommit.amazonaws.com"
+  source_arn    = var.codecommit_repository_arn
+}
